@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import Input from "./components/Input";
+import "./App.css";
+import { useState } from "react";
+import List from "./components/List";
+import ContextProvider from "./store/ContextProvider";
+import HeaderCartButton from "./components/HeaderCartButton";
+import Cart from "./components/Cart"
 
 function App() {
+  const [candyList, setCandyList] = useState([]);
+  const addCandyHandler = (cname, cdes, cprice) => {
+    setCandyList((prevList) => {
+      return [
+        ...prevList,
+        {
+          name: cname,
+          description: cdes,
+          price: cprice
+        },
+      ];
+    });
+  };
+  const[isViewed,setIsViewed]=useState(false);
+  const closeCartHandler=()=>{
+    setIsViewed(false);
+  }
+  const openCartHandler=()=>{
+    setIsViewed(true);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <ContextProvider>
+      <header>
+        <Input onAdd={addCandyHandler}></Input>
+        <HeaderCartButton showCart={openCartHandler}></HeaderCartButton>
+        {isViewed && <Cart list={candyList} onClose={closeCartHandler}></Cart>}
       </header>
-    </div>
+      <main>
+      <List candies={candyList}></List>
+      </main>
+    </ContextProvider>
   );
 }
 
